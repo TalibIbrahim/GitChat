@@ -37,7 +37,7 @@ const IGNORED_EXTS = new Set([
 export interface GithubFile {
   path: string;
   content: string;
-}
+} // Our file structure, used to store the path and content of each file we read from the cloned repository.
 
 // Recursively reads a directory and returns an array of file contents
 async function getFilesRecursively(
