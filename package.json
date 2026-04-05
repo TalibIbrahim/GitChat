@@ -11,6 +11,7 @@
   "dependencies": {
     "@langchain/community": "^1.1.21",
     "@langchain/core": "^1.1.29",
+    "@langchain/mongodb": "^1.1.0",
     "@langchain/ollama": "^1.2.6",
     "langchain": "^1.2.28",
     "mongodb": "^7.1.0",
