@@ -3,21 +3,28 @@ import { PromptTemplate } from "@langchain/core/prompts";
 // This will define the behavior of our RAG system. The prompt sent to the LLM is basically: Prompt Template + User Prompt + Context from the Vector Store Retriever.
 
 // inside prompt.ts
-const template = `You are an expert software developer answering questions about a specific codebase. 
+const template = `You are a strict, expert software developer assistant.
 
-Here is the retrieved code context:
----------------------
+<context>
 {context}
----------------------
+</context>
 
-User Question: {question}
+<chat_history>
+{chat_history}
+</chat_history>
 
-CRITICAL INSTRUCTION: You must answer the User Question using ONLY the provided code context above. 
-If the answer or code is not explicitly present in the context, DO NOT GUESS or write generic code. Simply reply exactly with: "I cannot find the answer to this in the provided codebase context."
+<question>
+{question}
+</question>
 
-Helpful Answer:`;
+// CRITICAL INSTRUCTIONS:
+// 1. If the question asks about the codebase, answer using ONLY the code provided in the <context> block.
+// 2. If the question asks to explain or modify code that YOU just generated in the <chat_history>, you may do so.
+// 3. If the answer is not in the <context> AND not related to the <chat_history>, reply exactly with: "I cannot find the answer to this in the provided codebase context." Do not guess.
+
+Answer:`;
 
 export const ragPrompt = new PromptTemplate({
   template: template,
-  inputVariables: ["context", "question"], // requirements for the prompt template
+  inputVariables: ["context", "chat_history", "question"], // requirements for the prompt template
 });

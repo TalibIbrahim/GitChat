@@ -28,6 +28,11 @@ export async function POST(req: Request) {
     const lastMessage = langchainMessages[langchainMessages.length - 1];
     const latestMessageText = lastMessage.content as string;
 
+    const historyMessages = langchainMessages.slice(0, -1);
+    const chatHistoryText = historyMessages
+      .map((m) => `${m._getType() === "human" ? "User" : "AI"}: ${m.content}`)
+      .join("\n\n");
+
     const retriever = await getVectorStoreRetriever(repoUrl);
     const docs = await retriever.invoke(latestMessageText);
 
@@ -43,6 +48,7 @@ export async function POST(req: Request) {
     // 5. Generate the stream
     const stream = await chain.stream({
       context: contextText,
+      chat_history: chatHistoryText || "No previous history.", // Pass the chat history text to the prompt
       question: latestMessageText, // Pass the extracted text here too
     });
 

@@ -18,7 +18,7 @@ export async function getVectorStoreRetriever(repoUrl: string) {
 
   // asRetriever is a built in method in Langchain. It wraps the mongodb search into a universal Langchain retriever interface that we can use in our RAG.
   return vectorStore.asRetriever({
-    k: 8, // return the top 'k' most relevant chunks. (adjust based on hardware capabilities and latency requirements)
+    k: 10, // return the top 'k' most relevant chunks. (adjust based on hardware capabilities and latency requirements)
     // A filter to only search chunks matching the repoUrl
     filter: {
       preFilter: {
