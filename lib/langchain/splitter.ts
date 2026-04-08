@@ -3,7 +3,7 @@ import { GithubFile } from "../github/fetcher";
 
 //   Takes an array of raw GitHub files and breaks them into smaller, AI-digestible chunks while keeping track of where they came from.
 
-export async function chunkFiles(files: GithubFile[]) {
+export async function chunkFiles(files: GithubFile[], repoUrl: string) {
   // Configuring the Splitter
 
   const splitter = new RecursiveCharacterTextSplitter({
@@ -13,7 +13,7 @@ export async function chunkFiles(files: GithubFile[]) {
 
   const rawDocuments = files.map((file) => ({
     pageContent: file.content,
-    metadata: { source: file.path },
+    metadata: { source: file.path, repoUrl: repoUrl },
     createdAt: new Date(),
   }));
 

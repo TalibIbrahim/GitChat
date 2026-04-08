@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const { repoUrl } = body; // extract the repo URL from the request body by destructuring
 
     const files = await fetchGithubRepo(repoUrl); // Fetch the github repo
-    const chunks = await chunkFiles(files); // Chunk the files
+    const chunks = await chunkFiles(files, repoUrl); // Chunk the files
 
     const client = await clientPromise; // Connect to MongoDB Atlas
     const db = client.db("github_rag");
