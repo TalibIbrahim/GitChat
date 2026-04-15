@@ -10,9 +10,18 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // 2. Extract messages and repoUrl sent by your frontend
-    const messages: UIMessage[] = body.messages;
-    const repoUrl: string = body.repoUrl;
+    // 2. Extract messages, repoUrl, kValue, Temperature, model sent by your frontend
+    const {
+      messages,
+      repoUrl,
+      temperature = 0.4,
+      kValue = 10,
+      model = "qwen2.5-coder:3b",
+    } = body;
+
+    console.log(
+      `\n [RAG Config] Model: ${model} | Temp: ${temperature} | K: ${kValue}\n`,
+    );
 
     if (!repoUrl) {
       return new Response(
@@ -33,7 +42,7 @@ export async function POST(req: Request) {
       .map((m) => `${m._getType() === "human" ? "User" : "AI"}: ${m.content}`)
       .join("\n\n");
 
-    const retriever = await getVectorStoreRetriever(repoUrl);
+    const retriever = await getVectorStoreRetriever(repoUrl, kValue);
     const docs = await retriever.invoke(latestMessageText);
 
     // Combine the top 4 chunks into one giant string of text
@@ -42,7 +51,7 @@ export async function POST(req: Request) {
       .join("\n\n---\n\n");
 
     // building the Chain (Prompt -> LLM )
-    const llm = getLLM(); // Ollama LLM connection (from models.ts)
+    const llm = getLLM(model, temperature); // Ollama LLM connection (from models.ts)
     const chain = ragPrompt.pipe(llm);
 
     // 5. Generate the stream

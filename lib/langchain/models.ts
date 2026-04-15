@@ -1,15 +1,14 @@
 import { ChatOllama } from "@langchain/ollama";
 import { OllamaEmbeddings } from "@langchain/ollama";
 
-export const getLLM = () => {
+export const getLLM = (modelName: string, temperature: number) => {
   return new ChatOllama({
     baseUrl: "http://localhost:11434",
-    model: "qwen2.5-coder:3b",
-    temperature: 0.4,
-    numCtx: 8192, // Forces Ollama to use more VRAM to read up to 8k tokens at once
+    model: modelName,
+    temperature: temperature,
+    numCtx: 8192,
   });
 };
-
 export const getEmbeddings = () => {
   return new OllamaEmbeddings({
     baseUrl: "http://localhost:11434",
